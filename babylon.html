@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Babylon.js</title>
+	<script src="https://cdn.babylonjs.com/babylon.js"></script>
+	<script src="https://threejs.org/examples/js/libs/stats.min.js"></script>
+</head>
+<body>
+
+	<div style="height:500px; width: 500px;" id="babylon">
+		<canvas id="babylonCanvas" style="height:500px; width: 500px;"></canvas>
+	</div>
+	
+	<script>
+		let stats = new Stats();
+		let container = document.getElementById('babylon');
+		container.appendChild(stats.dom);
+		
+		let canvas = document.getElementById('babylonCanvas');
+		
+		let engine = new BABYLON.Engine(canvas, true);
+		let sceneB = new BABYLON.Scene(engine);
+		let camera = new BABYLON.ArcRotateCamera("camera", 1, 0.8, 10, new BABYLON.Vector3(0, 0, 0), sceneB);
+		
+		let light = new BABYLON.DirectionalLight("light", new BABYLON.Vector3(0, -1, 0), sceneB);
+		light.diffuse = new BABYLON.Color3(1, 0, 0);
+		light.specular = new BABYLON.Color3(1, 1, 1);
+		
+		let box = BABYLON.Mesh.CreateBox("box", 3.0, sceneB);
+		let material = new BABYLON.StandardMaterial("texture", sceneB);
+		box.material = material;
+		material.diffuseTexture = new BABYLON.Texture("texture.jpg", sceneB);
+		
+		sceneB.activeCamera.attachControl(canvas);
+		
+		engine.runRenderLoop(function () {
+			box.rotation.x += 0.005;
+			box.rotation.y += 0.01;
+			sceneB.render();
+			stats.update();
+		});
+	</script>
+</body>
+</html>

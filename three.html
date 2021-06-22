@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Three.js</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/105/three.min.js"></script>
+	<script src="https://threejs.org/examples/js/libs/stats.min.js"></script>
+</head>
+<body>
+
+	<div style="height:500px; width: 500px;" id="three"></div>
+
+	<script>
+		let stats;
+		let div = document.getElementById('three');
+		
+		let height = div.offsetHeight;
+		let width = div.offsetWidth;
+		
+		let renderer = new THREE.WebGLRenderer();
+		renderer.setSize(width, height);
+		div.appendChild(renderer.domElement);
+		
+		stats = new Stats();
+		div.appendChild(stats.dom);
+		
+		let camera = new THREE.PerspectiveCamera(70, width / height, 1, 1000);
+		camera.position.z = 400;
+		
+		let sceneT = new THREE.Scene();
+		
+		let cube = new THREE.CubeGeometry(200, 200, 200);
+		
+		let texture = THREE.ImageUtils.loadTexture('texture.jpg');
+		texture.anisotropy = renderer.getMaxAnisotropy();
+		
+		let material = new THREE.MeshBasicMaterial({ map: texture });
+		
+		let mesh = new THREE.Mesh(cube, material);
+		sceneT.add(mesh);
+		
+		animate();
+		
+		function animate() {
+			
+			requestAnimationFrame(animate);
+			
+			mesh.rotation.x += 0.005;
+			mesh.rotation.y += 0.01;
+			
+			renderer.render(sceneT, camera);
+			stats.update();
+		}
+		
+	</script>
+</body>
+</html>

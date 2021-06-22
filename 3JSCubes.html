@@ -1,0 +1,113 @@
+<html>
+<head>
+	<title>ThreeJs lots of cubes</title>
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<!--	<script src="https://threejs.org/build/three.js"></script>-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/105/three.min.js"></script>
+	<script src="https://threejs.org/examples/js/libs/stats.min.js"></script>
+	<script src="https://threejs.org/examples/js/controls/TrackballControls.js"></script>
+	<style>
+		body {
+			font-family: Monospace;
+			background-color: #000;
+			color: #fff;
+			margin: 0px;
+			overflow: hidden;
+		}
+	
+	</style>
+</head>
+<body>
+	<script>
+		var container, stats;
+		
+		var camera, controls, scene, renderer;
+		
+		var gridSize = 20;
+		
+		init();
+		animate();
+		
+		function init() {
+			
+			camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.01, 1e10);
+			
+			scene = new THREE.Scene();
+			
+			scene.add(camera);
+			
+			controls = new THREE.TrackballControls(camera);
+			
+			controls.rotateSpeed = 5.0;
+			controls.zoomSpeed = 5;
+			controls.panSpeed = 2;
+			
+			controls.noZoom = false;
+			controls.noPan = false;
+			
+			controls.staticMoving = true;
+			controls.dynamicDampingFactor = 0.3;
+			
+			var light1 = new THREE.DirectionalLight(0xFFFFFF, 0.8);
+			light1.position.set(1, 2, 3);
+			scene.add(light1);
+			
+			var light2 = new THREE.AmbientLight(0x404040); // soft white light
+			scene.add(light2);
+			
+			var geometry = new THREE.BoxBufferGeometry(0.8, 0.8, 0.8);
+			var material = new THREE.MeshPhongMaterial({color: 0xeeeeee});
+			
+			for (var x = 0; x < gridSize; x++)
+				for (var y = 0; y < gridSize; y++)
+					for (var z = 0; z < gridSize; z++) {
+						var boxMesh = new THREE.Mesh(geometry, material);
+						boxMesh.position.set(-gridSize / 2 + x, -gridSize / 2 + y, -gridSize / 2 + z);
+						scene.add(boxMesh);
+					}
+			
+			camera.position.z = gridSize * 1.5;
+			// renderer
+			
+			renderer = new THREE.WebGLRenderer({antialias: true});
+			renderer.setPixelRatio(window.devicePixelRatio);
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			
+			container = document.createElement('div');
+			document.body.appendChild(container);
+			container.appendChild(renderer.domElement);
+			
+			stats = new Stats();
+			container.appendChild(stats.dom);
+			//
+			
+			window.addEventListener('resize', onWindowResize, false);
+			
+		}
+		
+		function onWindowResize() {
+			
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();
+			
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			
+			controls.handleResize();
+			
+		}
+		
+		function animate() {
+			
+			requestAnimationFrame(animate);
+			
+			controls.update();
+			
+			renderer.render(scene, camera);
+			
+			stats.update();
+			
+		}
+	
+	</script>
+</body>
+</html>
